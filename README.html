@@ -69,7 +69,17 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<p>jawbone etc.</p>
+<p>Specify the data sources and destinations.</p>
+<pre class="r"><code>training.file &lt;- 'pml-training.csv'
+test.file     &lt;- 'pml-test.csv'
+training.url  &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv'
+test.url      &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv'</code></pre>
+<p>Execute the download.</p>
+<pre class="r"><code>download.file(training.url, training.file)
+download.file(training.url, training.file)</code></pre>
+<p>Read the data</p>
+<pre class="r"><code>training &lt;- read.csv(training.file)
+test     &lt;- read.csv(test.file)</code></pre>
 </div>
 <div id="method" class="section level2">
 <h2>Method</h2>
