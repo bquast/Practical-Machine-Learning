@@ -31,8 +31,8 @@ download.file(training.url, training.file)
 ```
 Read the data
 ```{r}
-training <- read.csv(training.file)
-test     <- read.csv(test.file)
+training <- read.csv(training.file, na.strings = c("", "NA", "#DIV/0!") )
+test     <- read.csv(test.file,     na.strings = c("", "NA", "#DIV/0!") )
 ```
 
 
