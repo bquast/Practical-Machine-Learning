@@ -78,8 +78,8 @@ test.url      &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-tes
 <pre class="r"><code>download.file(training.url, training.file)
 download.file(training.url, training.file)</code></pre>
 <p>Read the data</p>
-<pre class="r"><code>training &lt;- read.csv(training.file)
-test     &lt;- read.csv(test.file)</code></pre>
+<pre class="r"><code>training &lt;- read.csv(training.file, na.strings = c(&quot;&quot;, &quot;NA&quot;, &quot;#DIV/0!&quot;) )
+test     &lt;- read.csv(test.file,     na.strings = c(&quot;&quot;, &quot;NA&quot;, &quot;#DIV/0!&quot;) )</code></pre>
 </div>
 <div id="method" class="section level2">
 <h2>Method</h2>
