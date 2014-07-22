@@ -69,17 +69,23 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<p>Specify the data sources and destinations.</p>
+<p>The data is taken from the <a href="http://groupware.les.inf.puc-rio.br/har">Human Activity Recognition</a> programme at <a href="http://groupware.les.inf.puc-rio.br/">Groupware</a>.</p>
+<p>We start the data loading procedure by specifying the data sources and destinations.</p>
 <pre class="r"><code>training.file &lt;- 'pml-training.csv'
 test.file     &lt;- 'pml-test.csv'
 training.url  &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv'
 test.url      &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv'</code></pre>
-<p>Execute the download.</p>
+<p>We then execute the download.</p>
 <pre class="r"><code>download.file(training.url, training.file)
-download.file(training.url, training.file)</code></pre>
-<p>Read the data</p>
-<pre class="r"><code>training &lt;- read.csv(training.file, na.strings = c(&quot;&quot;, &quot;NA&quot;, &quot;#DIV/0!&quot;) )
-test     &lt;- read.csv(test.file,     na.strings = c(&quot;&quot;, &quot;NA&quot;, &quot;#DIV/0!&quot;) )</code></pre>
+download.file(test.url,     test.file)</code></pre>
+<p>In order to ensure all transformations are applied to both the trainig and test data sets equally, we employ the OOP method and create functions for every step. First we create function to read data and set NAs and apply this to both datasets.</p>
+<pre class="r"><code>read.pml &lt;- function(x) { read.csv(x, na.strings = c(&quot;&quot;, &quot;NA&quot;, &quot;#DIV/0!&quot;) ) }
+training &lt;- read.pml(training.file)
+test     &lt;- read.pml(test.file)</code></pre>
+<p>Next we create a function to remove entire NA columns, and apply it to both data frames.</p>
+<pre class="r"><code>na.cols  &lt;- function(x) { x [ , colSums( is.na(x) ) &lt; nrow(x) ] }
+training &lt;- na.cols(training)
+test     &lt;- na.cols(test)</code></pre>
 </div>
 <div id="method" class="section level2">
 <h2>Method</h2>
