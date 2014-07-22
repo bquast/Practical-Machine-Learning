@@ -69,7 +69,18 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<p>jawbone etc.</p>
+<p>The data is taken from <a href="http://groupware.les.inf.puc-rio.br/har">Human Activity Recognition</a></p>
+<p>We download the data and save it to local csv files. We specify the urls and destination files.</p>
+<pre class="r"><code>training.url  &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv'
+test.url      &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv'
+training.file &lt;- 'training.csv'
+test.file     &lt;- 'test.csv'</code></pre>
+<p>Then we run the download commands.</p>
+<pre class="r"><code>download.file(training.url, training.file, method='wget')
+download.file(test.url,     test.file, method='wget')</code></pre>
+<p>Next, we load the data from the csv files into the workspace.</p>
+<pre class="r"><code>training &lt;- read.csv(training.file)
+test     &lt;- read.csv(test.file)</code></pre>
 </div>
 <div id="method" class="section level2">
 <h2>Method</h2>
@@ -78,6 +89,9 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="results" class="section level2">
 <h2>Results</h2>
 <p>plots, nice ones! with ggvis</p>
+</div>
+<div id="conclusions-and-limitations" class="section level2">
+<h2>Conclusions and Limitations</h2>
 </div>
 
 
