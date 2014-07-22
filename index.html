@@ -75,25 +75,59 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 test.file     &lt;- 'pml-test.csv'
 training.url  &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv'
 test.url      &lt;- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv'</code></pre>
-<p>We then execute the download.</p>
+<p>We then execute the downloads.</p>
 <pre class="r"><code>download.file(training.url, training.file)
 download.file(test.url,     test.file)</code></pre>
-<p>In order to ensure all transformations are applied to both the trainig and test data sets equally, we employ the OOP method and create functions for every step. First we create function to read data and set NAs and apply this to both datasets.</p>
+<p>In order to ensure all transformations are applied to both the trainig and test data sets equally, we employ the OOP method and create functions for every step. First we create a function to read data and set NAs and apply this to both datasets.</p>
 <pre class="r"><code>read.pml &lt;- function(x) { read.csv(x, na.strings = c(&quot;&quot;, &quot;NA&quot;, &quot;#DIV/0!&quot;) ) }
 training &lt;- read.pml(training.file)
 test     &lt;- read.pml(test.file)</code></pre>
-<p>Next we create a function to remove entire NA columns, and apply it to both data frames.</p>
-<pre class="r"><code>na.cols  &lt;- function(x) { x [ , colSums( is.na(x) ) &lt; nrow(x) ] }
-training &lt;- na.cols(training)
-test     &lt;- na.cols(test)</code></pre>
+<p>Next we create a function to remove entire NA columns, and apply it to both data frames. Lastly we create a function that removes any variables with missing NAs and apply this to the training set.</p>
+<pre class="r"><code>rm.na.cols  &lt;- function(x) { x[ , colSums( is.na(x) ) &lt; nrow(x) ] }
+training &lt;- rm.na.cols(training)
+test     &lt;- rm.na.cols(test)
+complete &lt;- function(x) {x[,sapply(x, function(y) !any(is.na(y)))] }
+incompl  &lt;- function(x) {names( x[,sapply(x, function(y) any(is.na(y)))] ) }
+na.var   &lt;- incompl(training)
+training &lt;- complete(training)</code></pre>
 </div>
 <div id="method" class="section level2">
 <h2>Method</h2>
-<p>features</p>
+<p>We use the <strong>Random Forests</strong> method, which applies <strong>bagging</strong> to <strong>tree learners</strong>.</p>
+<p>The <strong>Random Forests</strong> method is described by Leo Breiman in <a href="http://dx.doi.org/10.1023%2FA%3A1010933404324">Random Forests</a>.</p>
+<p>The <strong>B</strong>ootstap <strong>Agg</strong>regat<strong>ing</strong> (bagging) method is described in <a href="http://dx.doi.org/10.1007%2FBF00058655">Technical Report No. 421: Bagging Predictors</a> by Leo Breiman.</p>
+<pre class="r"><code>library(caret)
+library(randomForest)</code></pre>
+<pre class="r"><code>random.forest &lt;- train(training[,-60], training$classe, tuneGrid=data.frame(mtry=3), trControl=trainControl(method=&quot;none&quot;) )</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
-<p>plots, nice ones! with ggvis</p>
+<p>Some statistics on the results</p>
+<pre class="r"><code>summary(random.forest)</code></pre>
+<pre><code>##                 Length Class      Mode     
+## call                4  -none-     call     
+## type                1  -none-     character
+## predicted       19622  factor     numeric  
+## err.rate         3000  -none-     numeric  
+## confusion          30  -none-     numeric  
+## votes           98110  matrix     numeric  
+## oob.times       19622  -none-     numeric  
+## classes             5  -none-     character
+## importance         59  -none-     numeric  
+## importanceSD        0  -none-     NULL     
+## localImportance     0  -none-     NULL     
+## proximity           0  -none-     NULL     
+## ntree               1  -none-     numeric  
+## mtry                1  -none-     numeric  
+## forest             14  -none-     list     
+## y               19622  factor     numeric  
+## test                0  -none-     NULL     
+## inbag               0  -none-     NULL     
+## xNames             59  -none-     character
+## problemType         1  -none-     character
+## tuneValue           1  data.frame list     
+## obsLevels           5  -none-     character</code></pre>
+<pre class="r"><code>#confusionMatrix(predict(random.forest, newdata=test), test$classe)</code></pre>
 </div>
 
 
