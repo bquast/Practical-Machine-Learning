@@ -3,11 +3,7 @@ Bastiaan Quast
 Monday, July 21, 2014  
 
 ## Abstract
-A two line summary
-
-
-## Introduction
-quantified self, etc.
+We use the random forest method to estimate features for the Human Activity Recognition data set from Groupware. We that this method produces relevant results.
 
 
 ## Data
@@ -30,17 +26,17 @@ download.file(test.url,     test.file)
 In order to ensure all transformations are applied to both the trainig and test data sets equally, we employ the OOP method and create functions for every step. First we create a function to read data and set NAs and apply this to both datasets.
 
 ```r
-read.pml <- function(x) { read.csv(x, na.strings = c("", "NA", "#DIV/0!") ) }
-training <- read.pml(training.file)
-test     <- read.pml(test.file)
+read.pml       <- function(x) { read.csv(x, na.strings = c("", "NA", "#DIV/0!") ) }
+training       <- read.pml(training.file)
+test           <- read.pml(test.file)
 ```
 
 
 ```r
 library(caret)
-trainIndex     <- createDataPartition(training$classe, p=.50, list=FALSE)
-training.train <- training[trainIndex,]
-training.test  <- training[-trainIndex,]
+trainingIndex  <- createDataPartition(training$classe, p=.50, list=FALSE)
+training.train <- training[ trainingIndex,]
+training.test  <- training[-trainingIndex,]
 ```
 
 Next we create a function to remove entire NA columns, and apply it to both data frames. Lastly we create a function that removes any variables with missing NAs and apply this to the training set.
@@ -128,31 +124,38 @@ confusionMatrix(predict(random.forest,
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 2790    1    0    0    0
-##          B    0 1897    1    0    0
-##          C    0    0 1710    1    0
-##          D    0    0    0 1607    0
-##          E    0    0    0    0 1803
+##          A 2790    2    0    0    0
+##          B    0 1896    0    0    0
+##          C    0    0 1711    1    0
+##          D    0    0    0 1607    4
+##          E    0    0    0    0 1799
 ## 
 ## Overall Statistics
 ##                                     
-##                Accuracy : 1         
+##                Accuracy : 0.999     
 ##                  95% CI : (0.999, 1)
 ##     No Information Rate : 0.284     
 ##     P-Value [Acc > NIR] : <2e-16    
 ##                                     
-##                   Kappa : 1         
+##                   Kappa : 0.999     
 ##  Mcnemar's Test P-Value : NA        
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity             1.000    0.999    0.999    0.999    1.000
+## Sensitivity             1.000    0.999    1.000    0.999    0.998
 ## Specificity             1.000    1.000    1.000    1.000    1.000
-## Pos Pred Value          1.000    0.999    0.999    1.000    1.000
+## Pos Pred Value          0.999    1.000    0.999    0.998    1.000
 ## Neg Pred Value          1.000    1.000    1.000    1.000    1.000
 ## Prevalence              0.284    0.193    0.174    0.164    0.184
-## Detection Rate          0.284    0.193    0.174    0.164    0.184
-## Detection Prevalence    0.285    0.193    0.174    0.164    0.184
-## Balanced Accuracy       1.000    1.000    1.000    1.000    1.000
+## Detection Rate          0.284    0.193    0.174    0.164    0.183
+## Detection Prevalence    0.285    0.193    0.175    0.164    0.183
+## Balanced Accuracy       1.000    0.999    1.000    0.999    0.999
 ```
+
+
+```r
+plot( varImp(random.forest) )
+```
+
+![plot of chunk plot](./README_files/figure-html/plot.png) 
