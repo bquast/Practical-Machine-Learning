@@ -112,7 +112,7 @@ summary(random.forest)
 ## tuneValue           1  data.frame list     
 ## obsLevels           5  -none-     character
 ```
-
+We now compare the results from the predition with the actual data.
 
 ```r
 confusionMatrix(predict(random.forest,
@@ -126,34 +126,35 @@ confusionMatrix(predict(random.forest,
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 2790    1    0    0    0
-##          B    0 1897    7    0    0
-##          C    0    0 1704   18    0
-##          D    0    0    0 1587    0
-##          E    0    0    0    3 1803
+##          A 2790    7    0    0    0
+##          B    0 1889   15    0    0
+##          C    0    2 1696   20    0
+##          D    0    0    0 1583    2
+##          E    0    0    0    5 1801
 ## 
 ## Overall Statistics
 ##                                         
-##                Accuracy : 0.997         
-##                  95% CI : (0.996, 0.998)
+##                Accuracy : 0.995         
+##                  95% CI : (0.993, 0.996)
 ##     No Information Rate : 0.284         
 ##     P-Value [Acc > NIR] : <2e-16        
 ##                                         
-##                   Kappa : 0.996         
+##                   Kappa : 0.993         
 ##  Mcnemar's Test P-Value : NA            
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity             1.000    0.999    0.996    0.987    1.000
-## Specificity             1.000    0.999    0.998    1.000    1.000
-## Pos Pred Value          1.000    0.996    0.990    1.000    0.998
-## Neg Pred Value          1.000    1.000    0.999    0.997    1.000
+## Sensitivity             1.000    0.995    0.991    0.984    0.999
+## Specificity             0.999    0.998    0.997    1.000    0.999
+## Pos Pred Value          0.997    0.992    0.987    0.999    0.997
+## Neg Pred Value          1.000    0.999    0.998    0.997    1.000
 ## Prevalence              0.284    0.193    0.174    0.164    0.184
-## Detection Rate          0.284    0.193    0.174    0.162    0.184
-## Detection Prevalence    0.285    0.194    0.176    0.162    0.184
-## Balanced Accuracy       1.000    0.999    0.997    0.993    1.000
+## Detection Rate          0.284    0.193    0.173    0.161    0.184
+## Detection Prevalence    0.285    0.194    0.175    0.162    0.184
+## Balanced Accuracy       1.000    0.997    0.994    0.992    0.999
 ```
+The Kappa statistic of 0.994 reflects the out-of-sample error.
 
 
 ```r

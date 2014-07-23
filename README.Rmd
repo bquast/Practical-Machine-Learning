@@ -77,13 +77,14 @@ Some statistics on the results
 ```{r summary}
 summary(random.forest)
 ```
-
+We now compare the results from the predition with the actual data.
 ```{r confusion_matrix}
 confusionMatrix(predict(random.forest,
                         newdata=training.test[,-57]),
                 training.test$classe
                 )
 ```
+The Kappa statistic of 0.994 reflects the out-of-sample error.
 
 ```{r plot}
 plot( varImp(random.forest) )
