@@ -82,23 +82,32 @@ download.file(test.url,     test.file)</code></pre>
 <pre class="r"><code>read.pml &lt;- function(x) { read.csv(x, na.strings = c(&quot;&quot;, &quot;NA&quot;, &quot;#DIV/0!&quot;) ) }
 training &lt;- read.pml(training.file)
 test     &lt;- read.pml(test.file)</code></pre>
+<pre class="r"><code>library(caret)
+trainIndex     &lt;- createDataPartition(training$classe, p=.50, list=FALSE)
+training.train &lt;- training[trainIndex,]
+training.test  &lt;- training[-trainIndex,]</code></pre>
 <p>Next we create a function to remove entire NA columns, and apply it to both data frames. Lastly we create a function that removes any variables with missing NAs and apply this to the training set.</p>
-<pre class="r"><code>rm.na.cols  &lt;- function(x) { x[ , colSums( is.na(x) ) &lt; nrow(x) ] }
-training &lt;- rm.na.cols(training)
-test     &lt;- rm.na.cols(test)
-complete &lt;- function(x) {x[,sapply(x, function(y) !any(is.na(y)))] }
-incompl  &lt;- function(x) {names( x[,sapply(x, function(y) any(is.na(y)))] ) }
-na.var   &lt;- incompl(training)
-training &lt;- complete(training)</code></pre>
+<pre class="r"><code>rm.na.cols     &lt;- function(x) { x[ , colSums( is.na(x) ) &lt; nrow(x) ] }
+training.train &lt;- rm.na.cols(training.train)
+training.test  &lt;- rm.na.cols(training.test)
+complete       &lt;- function(x) {x[,sapply(x, function(y) !any(is.na(y)))] }
+incompl        &lt;- function(x) {names( x[,sapply(x, function(y) any(is.na(y)))] ) }
+trtr.na.var    &lt;- incompl(training.train)
+trts.na.var    &lt;- incompl(training.test)
+training.train &lt;- complete(training.train)
+training.test  &lt;- complete(training.test)</code></pre>
 </div>
 <div id="method" class="section level2">
 <h2>Method</h2>
 <p>We use the <strong>Random Forests</strong> method, which applies <strong>bagging</strong> to <strong>tree learners</strong>.</p>
 <p>The <strong>Random Forests</strong> method is described by Leo Breiman in <a href="http://dx.doi.org/10.1023%2FA%3A1010933404324">Random Forests</a>.</p>
 <p>The <strong>B</strong>ootstap <strong>Agg</strong>regat<strong>ing</strong> (bagging) method is described in <a href="http://dx.doi.org/10.1007%2FBF00058655">Technical Report No. 421: Bagging Predictors</a> by Leo Breiman.</p>
-<pre class="r"><code>library(caret)
-library(randomForest)</code></pre>
-<pre class="r"><code>random.forest &lt;- train(training[,-60], training$classe, tuneGrid=data.frame(mtry=3), trControl=trainControl(method=&quot;none&quot;) )</code></pre>
+<pre class="r"><code>library(randomForest)
+random.forest &lt;- train(training.train[,-60],
+                       training.train$classe,
+                       tuneGrid=data.frame(mtry=3),
+                       trControl=trainControl(method=&quot;none&quot;)
+                       )</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>Results</h2>
@@ -107,11 +116,11 @@ library(randomForest)</code></pre>
 <pre><code>##                 Length Class      Mode     
 ## call                4  -none-     call     
 ## type                1  -none-     character
-## predicted       19622  factor     numeric  
+## predicted        9812  factor     numeric  
 ## err.rate         3000  -none-     numeric  
 ## confusion          30  -none-     numeric  
-## votes           98110  matrix     numeric  
-## oob.times       19622  -none-     numeric  
+## votes           49060  matrix     numeric  
+## oob.times        9812  -none-     numeric  
 ## classes             5  -none-     character
 ## importance         59  -none-     numeric  
 ## importanceSD        0  -none-     NULL     
@@ -120,14 +129,48 @@ library(randomForest)</code></pre>
 ## ntree               1  -none-     numeric  
 ## mtry                1  -none-     numeric  
 ## forest             14  -none-     list     
-## y               19622  factor     numeric  
+## y                9812  factor     numeric  
 ## test                0  -none-     NULL     
 ## inbag               0  -none-     NULL     
 ## xNames             59  -none-     character
 ## problemType         1  -none-     character
 ## tuneValue           1  data.frame list     
 ## obsLevels           5  -none-     character</code></pre>
-<pre class="r"><code>#confusionMatrix(predict(random.forest, newdata=test), test$classe)</code></pre>
+<pre class="r"><code>confusionMatrix(predict(random.forest,
+                        newdata=training.test),
+                training.test$classe
+                )</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 2790    1    0    0    0
+##          B    0 1897    2    0    0
+##          C    0    0 1709    2    0
+##          D    0    0    0 1606    1
+##          E    0    0    0    0 1802
+## 
+## Overall Statistics
+##                                     
+##                Accuracy : 0.999     
+##                  95% CI : (0.999, 1)
+##     No Information Rate : 0.284     
+##     P-Value [Acc &gt; NIR] : &lt;2e-16    
+##                                     
+##                   Kappa : 0.999     
+##  Mcnemar's Test P-Value : NA        
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity             1.000    0.999    0.999    0.999    0.999
+## Specificity             1.000    1.000    1.000    1.000    1.000
+## Pos Pred Value          1.000    0.999    0.999    0.999    1.000
+## Neg Pred Value          1.000    1.000    1.000    1.000    1.000
+## Prevalence              0.284    0.193    0.174    0.164    0.184
+## Detection Rate          0.284    0.193    0.174    0.164    0.184
+## Detection Prevalence    0.285    0.194    0.174    0.164    0.184
+## Balanced Accuracy       1.000    1.000    0.999    0.999    1.000</code></pre>
 </div>
 
 

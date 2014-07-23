@@ -37,15 +37,25 @@ read.pml <- function(x) { read.csv(x, na.strings = c("", "NA", "#DIV/0!") ) }
 training <- read.pml(training.file)
 test     <- read.pml(test.file)
 ```
+
+```{r split, message=FALSE}
+library(caret)
+trainIndex     <- createDataPartition(training$classe, p=.50, list=FALSE)
+training.train <- training[trainIndex,]
+training.test  <- training[-trainIndex,]
+```
+
 Next we create a function to remove entire NA columns, and apply it to both data frames. Lastly we create a function that removes any variables with missing NAs and apply this to the training set.
 ```{r nacols}
-rm.na.cols  <- function(x) { x[ , colSums( is.na(x) ) < nrow(x) ] }
-training <- rm.na.cols(training)
-test     <- rm.na.cols(test)
-complete <- function(x) {x[,sapply(x, function(y) !any(is.na(y)))] }
-incompl  <- function(x) {names( x[,sapply(x, function(y) any(is.na(y)))] ) }
-na.var   <- incompl(training)
-training <- complete(training)
+rm.na.cols     <- function(x) { x[ , colSums( is.na(x) ) < nrow(x) ] }
+training.train <- rm.na.cols(training.train)
+training.test  <- rm.na.cols(training.test)
+complete       <- function(x) {x[,sapply(x, function(y) !any(is.na(y)))] }
+incompl        <- function(x) {names( x[,sapply(x, function(y) any(is.na(y)))] ) }
+trtr.na.var    <- incompl(training.train)
+trts.na.var    <- incompl(training.test)
+training.train <- complete(training.train)
+training.test  <- complete(training.test)
 ```
 
 ## Method
@@ -54,14 +64,13 @@ We use the **Random Forests** method, which applies **bagging** to **tree learne
 The **Random Forests** method is described by Leo Breiman in [Random Forests](http://dx.doi.org/10.1023%2FA%3A1010933404324).
 
 The **B**ootstap **Agg**regat**ing** (bagging) method is described in [Technical Report No. 421: Bagging Predictors](http://dx.doi.org/10.1007%2FBF00058655) by Leo Breiman.
-
-```{r packages}
-library(caret)
-library(randomForest)
-```
-
 ```{r train}
-random.forest <- train(training[,-60], training$classe, tuneGrid=data.frame(mtry=3), trControl=trainControl(method="none") )
+library(randomForest)
+random.forest <- train(training.train[,-60],
+                       training.train$classe,
+                       tuneGrid=data.frame(mtry=3),
+                       trControl=trainControl(method="none")
+                       )
 ```
 
 
@@ -72,5 +81,8 @@ summary(random.forest)
 ```
 
 ```{r confusion_matrix}
-#confusionMatrix(predict(random.forest, newdata=test), test$classe)
+confusionMatrix(predict(random.forest,
+                        newdata=training.test),
+                training.test$classe
+                )
 ```
