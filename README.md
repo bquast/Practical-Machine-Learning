@@ -29,6 +29,8 @@ In order to ensure all transformations are applied to both the trainig and test 
 read.pml       <- function(x) { read.csv(x, na.strings = c("", "NA", "#DIV/0!") ) }
 training       <- read.pml(training.file)
 test           <- read.pml(test.file)
+training       <- training[,-c(1,5,6)]
+test           <- test[,-c(1,5,6)]
 ```
 
 
@@ -70,7 +72,7 @@ library(randomForest)
 ```
 
 ```r
-random.forest <- train(training.train[,-60],
+random.forest <- train(training.train[,-57],
                        training.train$classe,
                        tuneGrid=data.frame(mtry=3),
                        trControl=trainControl(method="none")
@@ -95,7 +97,7 @@ summary(random.forest)
 ## votes           49060  matrix     numeric  
 ## oob.times        9812  -none-     numeric  
 ## classes             5  -none-     character
-## importance         59  -none-     numeric  
+## importance         56  -none-     numeric  
 ## importanceSD        0  -none-     NULL     
 ## localImportance     0  -none-     NULL     
 ## proximity           0  -none-     NULL     
@@ -105,7 +107,7 @@ summary(random.forest)
 ## y                9812  factor     numeric  
 ## test                0  -none-     NULL     
 ## inbag               0  -none-     NULL     
-## xNames             59  -none-     character
+## xNames             56  -none-     character
 ## problemType         1  -none-     character
 ## tuneValue           1  data.frame list     
 ## obsLevels           5  -none-     character
@@ -114,7 +116,7 @@ summary(random.forest)
 
 ```r
 confusionMatrix(predict(random.forest,
-                        newdata=training.test),
+                        newdata=training.test[,-57]),
                 training.test$classe
                 )
 ```
@@ -124,33 +126,33 @@ confusionMatrix(predict(random.forest,
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 2790    2    0    0    0
-##          B    0 1896    0    0    0
-##          C    0    0 1711    1    0
-##          D    0    0    0 1607    4
-##          E    0    0    0    0 1799
+##          A 2790    1    0    0    0
+##          B    0 1897    7    0    0
+##          C    0    0 1704   18    0
+##          D    0    0    0 1587    0
+##          E    0    0    0    3 1803
 ## 
 ## Overall Statistics
-##                                     
-##                Accuracy : 0.999     
-##                  95% CI : (0.999, 1)
-##     No Information Rate : 0.284     
-##     P-Value [Acc > NIR] : <2e-16    
-##                                     
-##                   Kappa : 0.999     
-##  Mcnemar's Test P-Value : NA        
+##                                         
+##                Accuracy : 0.997         
+##                  95% CI : (0.996, 0.998)
+##     No Information Rate : 0.284         
+##     P-Value [Acc > NIR] : <2e-16        
+##                                         
+##                   Kappa : 0.996         
+##  Mcnemar's Test P-Value : NA            
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity             1.000    0.999    1.000    0.999    0.998
-## Specificity             1.000    1.000    1.000    1.000    1.000
-## Pos Pred Value          0.999    1.000    0.999    0.998    1.000
-## Neg Pred Value          1.000    1.000    1.000    1.000    1.000
+## Sensitivity             1.000    0.999    0.996    0.987    1.000
+## Specificity             1.000    0.999    0.998    1.000    1.000
+## Pos Pred Value          1.000    0.996    0.990    1.000    0.998
+## Neg Pred Value          1.000    1.000    0.999    0.997    1.000
 ## Prevalence              0.284    0.193    0.174    0.164    0.184
-## Detection Rate          0.284    0.193    0.174    0.164    0.183
-## Detection Prevalence    0.285    0.193    0.175    0.164    0.183
-## Balanced Accuracy       1.000    0.999    1.000    0.999    0.999
+## Detection Rate          0.284    0.193    0.174    0.162    0.184
+## Detection Prevalence    0.285    0.194    0.176    0.162    0.184
+## Balanced Accuracy       1.000    0.999    0.997    0.993    1.000
 ```
 
 

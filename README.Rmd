@@ -32,6 +32,8 @@ In order to ensure all transformations are applied to both the trainig and test 
 read.pml       <- function(x) { read.csv(x, na.strings = c("", "NA", "#DIV/0!") ) }
 training       <- read.pml(training.file)
 test           <- read.pml(test.file)
+training       <- training[,-c(1,5,6)]
+test           <- test[,-c(1,5,6)]
 ```
 
 ```{r split, message=FALSE}
@@ -62,7 +64,7 @@ The **Random Forests** method is described by Leo Breiman in [Random Forests](ht
 The **B**ootstap **Agg**regat**ing** (bagging) method is described in [Technical Report No. 421: Bagging Predictors](http://dx.doi.org/10.1007%2FBF00058655) by Leo Breiman.
 ```{r train}
 library(randomForest)
-random.forest <- train(training.train[,-60],
+random.forest <- train(training.train[,-57],
                        training.train$classe,
                        tuneGrid=data.frame(mtry=3),
                        trControl=trainControl(method="none")
@@ -78,7 +80,7 @@ summary(random.forest)
 
 ```{r confusion_matrix}
 confusionMatrix(predict(random.forest,
-                        newdata=training.test),
+                        newdata=training.test[,-57]),
                 training.test$classe
                 )
 ```
