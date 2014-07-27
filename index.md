@@ -20,8 +20,8 @@ test.url      <- 'https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testin
 We then execute the downloads.
 
 ```r
-download.file(training.url, training.file)
-download.file(test.url,     test.file)
+download.file(training.url, training.file, method='wget')
+download.file(test.url,     test.file,     method='wget')
 ```
 In order to ensure all transformations are applied to both the trainig and test data sets equally, we employ the OOP method and create functions for every step. First we create a function to read data and set NAs and apply this to both datasets.
 
@@ -56,11 +56,7 @@ training.test  <- complete(training.test)
 ```
 
 ## Method
-We use the **Random Forests** method, which applies **bagging** to **tree learners**.
-
-The **Random Forests** method is described by Leo Breiman in [Random Forests](http://dx.doi.org/10.1023%2FA%3A1010933404324).
-
-The **B**ootstap **Agg**regat**ing** (bagging) method is described in [Technical Report No. 421: Bagging Predictors](http://dx.doi.org/10.1007%2FBF00058655) by Leo Breiman.
+We use the **Random Forests** method [@breiman2001random], which applies **bagging** to **tree learners**. The **B**ootstap **Agg**regat**ing** (bagging) method is described in Technical Report No. 421: Bagging Predictors [@breiman1996bagging].
 
 ```r
 library(randomForest)
@@ -119,32 +115,32 @@ confusionMatrix(predict(random.forest,
 ##           Reference
 ## Prediction    A    B    C    D    E
 ##          A 2790    1    0    0    0
-##          B    0 1896    9    0    0
-##          C    0    1 1702   20    0
-##          D    0    0    0 1588    1
-##          E    0    0    0    0 1802
+##          B    0 1897    4    0    0
+##          C    0    0 1707   14    0
+##          D    0    0    0 1593   10
+##          E    0    0    0    1 1793
 ## 
 ## Overall Statistics
-##                                         
-##                Accuracy : 0.997         
-##                  95% CI : (0.995, 0.998)
-##     No Information Rate : 0.284         
-##     P-Value [Acc > NIR] : <2e-16        
-##                                         
-##                   Kappa : 0.996         
-##  Mcnemar's Test P-Value : NA            
+##                                           
+##                Accuracy : 0.9969          
+##                  95% CI : (0.9956, 0.9979)
+##     No Information Rate : 0.2844          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.9961          
+##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity             1.000    0.999    0.995    0.988    0.999
-## Specificity             1.000    0.999    0.997    1.000    1.000
-## Pos Pred Value          1.000    0.995    0.988    0.999    1.000
-## Neg Pred Value          1.000    1.000    0.999    0.998    1.000
-## Prevalence              0.284    0.193    0.174    0.164    0.184
-## Detection Rate          0.284    0.193    0.173    0.162    0.184
-## Detection Prevalence    0.285    0.194    0.176    0.162    0.184
-## Balanced Accuracy       1.000    0.999    0.996    0.994    1.000
+## Sensitivity            1.0000   0.9995   0.9977   0.9907   0.9945
+## Specificity            0.9999   0.9995   0.9983   0.9988   0.9999
+## Pos Pred Value         0.9996   0.9979   0.9919   0.9938   0.9994
+## Neg Pred Value         1.0000   0.9999   0.9995   0.9982   0.9988
+## Prevalence             0.2844   0.1935   0.1744   0.1639   0.1838
+## Detection Rate         0.2844   0.1934   0.1740   0.1624   0.1828
+## Detection Prevalence   0.2845   0.1938   0.1754   0.1634   0.1829
+## Balanced Accuracy      0.9999   0.9995   0.9980   0.9947   0.9972
 ```
 The Kappa statistic of 0.994 reflects the out-of-sample error.
 
@@ -154,3 +150,5 @@ plot( varImp(random.forest) )
 ```
 
 ![plot of chunk plot](./index_files/figure-html/plot.png) 
+
+## References

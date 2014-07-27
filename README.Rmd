@@ -5,6 +5,7 @@ date: "Monday, July 21, 2014"
 output:
   html_document:
     keep_md: yes
+bibliography: bibliography.bib
 ---
 
 ## Abstract
@@ -56,12 +57,8 @@ training.test  <- complete(training.test)
 ```
 
 ## Method
-We use the **Random Forests** method, which applies **bagging** to **tree learners**.
-
-The **Random Forests** method is described by Leo Breiman in [Random Forests](http://dx.doi.org/10.1023%2FA%3A1010933404324).
-
-The **B**ootstap **Agg**regat**ing** (bagging) method is described in [Technical Report No. 421: Bagging Predictors](http://dx.doi.org/10.1007%2FBF00058655) by Leo Breiman.
-```{r train}
+We use the **Random Forests** method [@breiman2001random], which applies **bagging** to **tree learners**. The **B**ootstap **Agg**regat**ing** (bagging) method is described in Technical Report No. 421: Bagging Predictors [@breiman1996bagging].
+```{r train, cache=TRUE}
 library(randomForest)
 random.forest <- train(training.train[,-57],
                        training.train$classe,
@@ -88,3 +85,5 @@ The Kappa statistic of 0.994 reflects the out-of-sample error.
 ```{r plot}
 plot( varImp(random.forest) )
 ```
+
+## References
