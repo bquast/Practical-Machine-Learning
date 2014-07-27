@@ -60,14 +60,6 @@ We use the **Random Forests** method [@breiman2001random], which applies **baggi
 
 ```r
 library(randomForest)
-```
-
-```
-## randomForest 4.6-7
-## Type rfNews() to see new features/changes/bug fixes.
-```
-
-```r
 random.forest <- train(training.train[,-57],
                        training.train$classe,
                        tuneGrid=data.frame(mtry=3),
@@ -128,33 +120,33 @@ confusionMatrix(predict(random.forest,
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 2789    2    0    0    0
-##          B    1 1894    1    0    0
-##          C    0    2 1710   13    0
-##          D    0    0    0 1595    3
-##          E    0    0    0    0 1800
+##          A 2790    5    0    0    0
+##          B    0 1893    7    0    0
+##          C    0    0 1703    5    0
+##          D    0    0    1 1602    2
+##          E    0    0    0    1 1801
 ## 
 ## Overall Statistics
 ##                                           
-##                Accuracy : 0.9978          
-##                  95% CI : (0.9966, 0.9986)
+##                Accuracy : 0.9979          
+##                  95% CI : (0.9967, 0.9987)
 ##     No Information Rate : 0.2844          
 ##     P-Value [Acc > NIR] : < 2.2e-16       
 ##                                           
-##                   Kappa : 0.9972          
+##                   Kappa : 0.9973          
 ##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9996   0.9979   0.9994   0.9919   0.9983
-## Specificity            0.9997   0.9997   0.9981   0.9996   1.0000
-## Pos Pred Value         0.9993   0.9989   0.9913   0.9981   1.0000
-## Neg Pred Value         0.9999   0.9995   0.9999   0.9984   0.9996
+## Sensitivity            1.0000   0.9974   0.9953   0.9963   0.9989
+## Specificity            0.9993   0.9991   0.9994   0.9996   0.9999
+## Pos Pred Value         0.9982   0.9963   0.9971   0.9981   0.9994
+## Neg Pred Value         1.0000   0.9994   0.9990   0.9993   0.9998
 ## Prevalence             0.2844   0.1935   0.1744   0.1639   0.1838
-## Detection Rate         0.2843   0.1931   0.1743   0.1626   0.1835
-## Detection Prevalence   0.2845   0.1933   0.1758   0.1629   0.1835
-## Balanced Accuracy      0.9997   0.9988   0.9988   0.9958   0.9992
+## Detection Rate         0.2844   0.1930   0.1736   0.1633   0.1836
+## Detection Prevalence   0.2849   0.1937   0.1741   0.1636   0.1837
+## Balanced Accuracy      0.9996   0.9982   0.9974   0.9980   0.9994
 ```
 The Kappa statistic of 0.994 reflects the out-of-sample error.
 
